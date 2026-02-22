@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}My Booking History{% endblock %}
+
+{% block content %}
+<h2>My Booking History</h2>
+
+{% if bookings %}
+<div class="bookings-container" style="display:flex; flex-wrap:wrap; gap:20px;">
+    {% for booking in bookings %}
+    <div class="booking-card" style="
+        flex: 1 1 calc(50% - 20px); /* two columns */
+        background:#f7f7f7;
+        padding:15px;
+        border-radius:8px;
+        border:1px solid #ccc;
+        box-sizing:border-box;
+        min-width:250px; /* prevent collapsing too small */
+    ">
+        <p><strong>Movie:</strong> {{ booking.Movie_Title }}</p>
+        <p><strong>Show Date:</strong> {{ booking.Show_Date }}</p>
+        <p><strong>Show Time:</strong> {{ booking.Show_Time }}</p>
+        <p><strong>Hall:</strong> {{ booking.Hall_Number }}</p>
+        <p><strong>Seats:</strong> {{ booking.Seats | join(', ') }}</p>
+        <p><strong>Total Price:</strong> ${{ booking.Total_Price }}</p>
+        <p><strong>Payment Status:</strong> {{ booking.Payment_Status }}</p>
+
+        {% if booking.Payment_Status != 'Cancelled' %}
+        <form method="POST" action="{{ url_for('cancel_booking', booking_id=booking.Booking_Id) }}" style="margin-top:10px;" onsubmit="return confirmCancel();">
+            <button type="submit" style="padding:6px 12px; background:red; color:white; border:none; border-radius:5px; cursor:pointer;">
+                Cancel Booking
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>You have no bookings yet.</p>
+{% endif %}
+
+<br>
+<a class="btn" href="{{ url_for('movies_page') }}"
+   style="padding:8px 16px; background-color:#444; color:white; text-decoration:none; border-radius:5px;">Back to Movies</a>
+<script>
+function confirmCancel() {
+    return confirm("Are you sure you want to cancel this booking?");
+}
+</script>
+
+{% endblock %}

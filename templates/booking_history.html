@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking History{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center; margin-bottom:20px;">Booking History</h2>
+
+<div style="display:flex; justify-content:center;">
+    <table style="
+        border-collapse: collapse;
+        width: 90%;
+        max-width: 1000px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    ">
+        <thead style="background-color:#aa336a; color:white;">
+            <tr>
+                <th>Booking ID</th>
+                <th>User</th>
+                <th>Movie</th>
+                <th>Hall</th>
+                <th>Show Date</th>
+                <th>Show Time</th>
+                <th>Total Price</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody style="background-color:#f9f9f9;">
+            {% for booking in bookings %}
+            <tr style="border-bottom:1px solid #ddd;">
+                <td>{{ booking.Booking_Id }}</td>
+                <td>{{ booking.User_Name }}</td>
+                <td>{{ booking.Title }}</td>
+                <td>{{ booking.Hall_Number }}</td>
+                <td>{{ booking.Show_Date }}</td>
+                <td>{{ booking.Show_Time }}</td>
+                <td>{{ booking.Total_Price }}</td>
+                <td>{{ booking.Payment_Status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div style="text-align:center; margin-top:20px;">
+    <a href="{{ url_for('admin_dashboard') }}"
+       style="display:inline-block; padding:10px 20px; background:#444; color:white; text-decoration:none; border-radius:5px;">
+        Back
+    </a>
+</div>
+{% endblock %}

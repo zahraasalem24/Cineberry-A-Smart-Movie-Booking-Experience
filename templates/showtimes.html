@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Showtimes - {{ movie.Title }}{% endblock %}
+
+{% block content %}
+
+<h2>Showtimes for {{ movie.Title }}</h2>
+
+<div style="display:flex; gap:20px; align-items:flex-start; margin-bottom:20px;">
+    <!-- Movie Poster -->
+    <img src="{{ url_for('static', filename='images/movie' ~ movie.Movie_Id ~ '.jpg') }}"
+         alt="{{ movie.Title }}"
+         style="width:200px; height:300px;">
+
+    <!-- Trailer -->
+    {% if movie.Trailer_URL %}
+        {% set video_id = movie.Trailer_URL.split('v=')[-1].split('&')[0] %}
+        <iframe width="560" height="300"
+                src="https://www.youtube.com/embed/{{ video_id }}"
+                frameborder="0"
+                allowfullscreen>
+        </iframe>
+    {% else %}
+        <p>No trailer available.</p>
+    {% endif %}
+</div>
+
+<h3>Select a Showtime:</h3>
+
+<div style="display:flex; flex-wrap: wrap; gap:15px; justify-content: center;">
+    {% for s in showtimes %}
+        <div style="
+            padding:12px;
+            border:1px solid #ccc;
+            border-radius:8px;
+            width:300px;
+            background:#f7f7f7;
+        ">
+            <strong>Date:</strong> {{ s.Show_Date }} <br>
+            <strong>Time:</strong> {{ s.Show_Time }} <br>
+            <strong>Hall:</strong> {{ s.Hall_Number }} <br><br>
+
+            <a href="{{ url_for('seat_selection_showtime', showtime_id=s.Showtime_Id) }}"
+               style="padding:6px 12px; background:#ff6600; color:white; border-radius:5px; text-decoration:none;">
+               Choose Seats
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+<br>
+<a href="{{ url_for('movies_page') }}"
+   style="padding:8px 16px; background:#444; color:white; text-decoration:none; border-radius:5px;">
+   Back
+</a>
+
+{% endblock %}

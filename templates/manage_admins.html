@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Admins{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center; margin-bottom:20px;">Manage Admins</h2>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flash-messages" style="list-style:none; padding:0; text-align:center; margin-bottom:20px;">
+      {% for message in messages %}
+        <li style="background:#ffb3d9; display:inline-block; padding:8px 15px; margin:5px; border-radius:5px; color:#800000;">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<!-- ========== USERS TABLE ========== -->
+<h3  style="text-align:center; margin-bottom:10px;">All Users</h3>
+<div style="display:flex; justify-content:center;">
+<table style="
+        border-collapse: collapse;
+        width: 90%;
+        max-width: 1000px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    ">
+    <thead style="background-color:#aa336a; color:white;">
+    <tr>
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody style="background-color:#f9f9f9;">
+    {% for u in users %}
+    <tr style="border-bottom:1px solid #ddd;">
+        <td>{{ u.User_Id }}</td>
+        <td>{{ u.First_Name_u }} {{ u.Last_Name_u }}</td>
+        <td>{{ u.Email_u }}</td>
+        <td>{{ u.Phone_Number_u }}</td>
+        <td>
+            {% set already_granted = false %}
+            {% for a in granted_admins %}
+                {% if a.Email_a == u.Email_u %}
+                    {% set already_granted = true %}
+                {% endif %}
+            {% endfor %}
+
+            {% if not already_granted %}
+            <!-- GRANT ADMIN -->
+            <form method="POST" style="display:inline;">
+                <input type="hidden" name="action" value="grant">
+                <input type="hidden" name="user_id" value="{{ u.User_Id }}">
+                <button type="submit" style="padding:8px 12px; background:#ff80bf; color:white; border:none; border-radius:5px; cursor:pointer;">Grant Admin</button>
+            </form>
+            {% else %}
+                 <span style="color:#555;" >Already Admin </span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<br><hr><br>
+
+<!-- ========== GRANTED ADMINS TABLE ========== -->
+<h3 style="text-align:center; margin-bottom:10px;">Granted Admins</h3>
+<div style="display:flex; justify-content:center;">
+<table style="
+        border-collapse: collapse;
+        width: 90%;
+        max-width: 1000px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    ">
+    <thead style="background-color:#aa336a; color:white;">
+    <tr>
+        <th>Admin ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody style="background-color:#f9f9f9;">
+    {% for a in granted_admins %}
+    <tr  style="border-bottom:1px solid #ddd;" >
+        <td>{{ a.Admin_Id }}</td>
+        <td>{{ a.First_Name_a }} {{ a.Last_Name_a }}</td>
+        <td>{{ a.Email_a }}</td>
+        <td>{{ a.Phone_Number_a }}</td>
+        <td>
+            <!-- REVOKE ADMIN -->
+            <form method="POST" style="display:inline;">
+                <input type="hidden" name="action" value="revoke">
+                <input type="hidden" name="user_id" value="{{ a.Admin_Id }}">
+                <button type="submit" style="padding:8px 12px; background:#ff80bf; color:white; border:none; border-radius:5px; cursor:pointer;">Revoke</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<!-- Back to Admin Dashboard Button -->
+<div style="text-align:center; margin-top:20px;">
+<a href="{{ url_for('admin_dashboard') }}"
+   style="display:inline-block; padding:10px 20px; background:#444; color:white; text-decoration:none; border-radius:5px;">
+    Back
+</a>
+</div>
+
+{% endblock %}

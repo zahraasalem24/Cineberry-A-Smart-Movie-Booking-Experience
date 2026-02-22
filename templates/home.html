@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% with messages = get_flashed_messages(category_filter=["login"]) %}
+  {% if messages %}
+    <ul class="flash-login">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+    <meta charset="UTF-8">
+    <title>Cineberry - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header style="background: linear-gradient(90deg, #aa336a, #cc5599); padding:15px 30px; display:flex; align-items:center; justify-content:space-between; box-shadow: 0 3px 10px rgba(0,0,0,0.2);">
+    <div style="display:flex; align-items:center; gap:10px;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Cineberry Logo" style="height:100px;">
+        <h1 style="margin:0; color:white; font-size:1.8rem;">Cineberry</h1>
+    </div>
+</header>
+
+<main style="padding:20px; text-align:center;">
+    <h2>Welcome to Cineberry</h2>
+    <p>Please choose an option:</p>
+
+    <div class="buttons" style="
+        display:flex;
+        flex-direction:column;
+        gap:15px;
+        width:100%;
+        align-items:center;
+        margin-top:20px;">
+
+        <a class="cb-button" href="{{ url_for('sign_in') }}">
+            Sign In
+        </a>
+
+        <a class="cb-button" href="{{ url_for('guest_login') }}">
+            Login as Guest
+        </a>
+
+        <a class="cb-button" href="{{ url_for('admin_login') }}">
+            Login as Admin
+        </a>
+    </div>
+</main>
+
+<footer style="text-align:center; padding:15px; background-color:#222; color:white; box-shadow:0 -3px 10px rgba(0,0,0,0.2);">
+    <p>&copy; 2025 Cineberry</p>
+</footer>
+
+</body>
+</html>

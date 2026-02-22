@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cineberry{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header style="background: linear-gradient(90deg, #aa336a, #cc5599); padding:15px 30px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Cineberry Logo" style="height:100px;">
+        <h1 style="color:white; margin:0;">Cineberry</h1>
+    </div>
+</header>
+
+<nav style="margin-left:auto; display:flex; gap:15px;">
+            {% block nav_buttons %}{% endblock %}
+        </nav>
+    </div>
+</header>
+
+<!-- Background GIF-->
+<img src="{{ url_for('static', filename='images/cinema.gif') }}"
+     alt="Background GIF"
+     style="
+         position: fixed;
+         top: 20%;
+         right: 5%;
+         transform: translateY(-50%);
+         width: 150px;  /* adjust size */
+         opacity: 0.3;  /* semi-transparent */
+         z-index: 0;    /* behind everything */
+         pointer-events: none; /* clicks pass through */
+     ">
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<footer style="text-align:center; padding:15px; background:#222; color:white;">
+    <p>&copy; 2025 Cineberry</p>
+</footer>
+</body>
+</html>

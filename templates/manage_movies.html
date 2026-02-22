@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Movies{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center; margin-bottom:20px;">Manage Movies</h2>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flash-messages" style="max-width:600px; margin:auto; padding:10px; list-style:none; background:#ffb3d9; color:#721c24; border-radius:5px;">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    <br>
+  {% endif %}
+{% endwith %}
+
+<h3 style="text-align:center;">Movies list</h3>
+<div style="overflow-x:auto; max-width:900px; margin:auto;">
+<table border="1" cellpadding="8" cellspacing="0" style="width:100%; background:#f9f9f9; border-collapse:collapse; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+    <thead style="background-color:#aa336a; color:white;">
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Duration</th>
+        <th>Genre</th>
+        <th>Age Rating</th>
+        <th>Poster</th>
+        <th>Trailer</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for movie in movies %}
+    <tr>
+        <td>{{ movie.Movie_Id }}</td>
+        <td>{{ movie.Title }}</td>
+        <td>{{ movie.Duration }}</td>
+        <td>{{ movie.Genre }}</td>
+        <td>{{ movie.age_rating }}</td>
+         <td>
+            {% if movie.Poster %}
+                <img src="{{ url_for('static', filename='images/' ~ movie.Poster) }}" alt="Poster" style="width:50px; height:75px;  border-radius:4px;">
+            {% else %}
+                N/A
+            {% endif %}
+        </td>
+         <!-- SHOW TRAILER URL -->
+        <td>
+            {% if movie.Trailer_URL %}
+                <a href="{{ movie.Trailer_URL }}" target="_blank"  style="color:#007bff; text-decoration:none;">Watch</a>
+            {% else %}
+                N/A
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<h3 style="text-align:center; margin-top:30px;">What would you like to do?</h3>
+<div style="text-align:center; margin-bottom:20px;">
+<label style="margin-right:15px;">
+    <input type="radio" name="action_mode" value="add" checked onclick="switchMode('add')"> Add Movie
+</label>
+<label style="margin-left: 20px;">
+    <input type="radio" name="action_mode" value="update" onclick="switchMode('update')"> Update Movie
+</label>
+</div>
+
+<div id="update-select-box" style="display:none; text-align:center; margin-bottom:20px;">
+    <label>Select a movie to update:</label><br>
+    <select id="movie_selector" onchange="onMovieSelect()" style="padding:8px 12px; border-radius:5px; border:1px solid #ccc; width:250px;">
+        <option value="">-- Choose Movie --</option>
+        {% for movie in movies %}
+        <option value="{{ movie.Movie_Id }}"
+                data-movie='{{ movie | tojson }}'>
+            {{ movie.Title }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+
+<h3 id="form-title" style="text-align:center;">Add Movie</h3>
+<form method="POST" id="movie-form" enctype="multipart/form-data" style="max-width:700px; background:#f9f9f9; margin:auto; padding:20px; border:1px solid #ddd; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+    <input type="hidden" name="movie_id" id="movie_id">
+
+    <label>Title:</label><br>
+    <input type="text" name="title" id="title" required style="width:100%; padding:8px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc;"><br>
+
+    <label>Description:</label><br>
+    <textarea name="description" id="description" style="width:100%; height:120px; padding:8px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc;"></textarea><br>
+
+    <label>Duration (minutes):</label><br>
+    <input type="number" name="duration" id="duration" required style="width:100%; padding:8px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc;"><br>
+
+    <label>Genre:</label><br>
+    <select name="genre" id="genre" required style="width:100%; padding:8px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc;">
+        {% for g in genre_options %}
+        <option value="{{ g }}">{{ g }}</option>
+        {% endfor %}
+    </select>
+    <br>
+
+    <label>Age Rating:</label><br>
+    <select name="age_rating" id="age_rating" required style="width:100%; padding:8px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc;">
+        {% for option in age_options %}
+        <option value="{{ option }}">{{ option }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <label>Trailer URL:</label><br>
+    <input type="text" name="trailer_url" id="trailer_url" placeholder="https://youtube.com/..." oninput="validateYouTube(this)" style="width:100%; padding:8px; margin-bottom:5px; border-radius:5px; border:1px solid #ccc;">
+    <p id="trailer_error" style="color:red; display:none; margin:5px 0 10px 0;">
+        Invalid YouTube link. Only YouTube URLs are allowed.
+    </p>
+    <br><br>
+
+    <label>Poster:</label><br>
+    <input type="file" name="poster" id="poster" accept="image/*"  style="margin-bottom:15px;"><br><br>
+
+    <button type="submit"  style="padding:10px 20px; background:#28a745; color:white; border:none; border-radius:5px; cursor:pointer; margin-bottom:10px;">Submit</button>
+
+    <br><br>
+    <a href="{{ url_for('admin_dashboard') }}"
+        style="display:inline-block; padding:8px 14px; background:#444; color:white; text-decoration:none; border-radius:5px;">
+        Back
+</a>
+
+</form>
+
+<script>
+function fillForm(movie) {
+    document.getElementById('form-title').innerText = "Update Movie ID " + (movie.Movie_Id ?? "");
+    document.getElementById('movie_id').value = movie.Movie_Id ?? "";
+    document.getElementById('title').value = movie.Title ?? "";
+    document.getElementById('description').value = movie.Description_ ?? movie.Description ?? "";
+    document.getElementById('duration').value = movie.Duration ?? "";
+    document.getElementById('genre').value = movie.Genre ?? "";
+    document.getElementById('age_rating').value = movie.age_rating ?? "";
+    document.getElementById('trailer_url').value = movie.Trailer_URL ?? "";
+}
+
+
+function resetForm() {
+    document.getElementById('form-title').innerText = "Add New Movie";
+    document.getElementById('movie_id').value = "";
+    document.getElementById('title').value = "";
+    document.getElementById('description').value = "";
+    document.getElementById('duration').value = "";
+    document.getElementById('genre').value = "Adventure";
+    document.getElementById('age_rating').value = "G";
+    document.getElementById('poster').value = "";
+    document.getElementById('trailer_url').value = "";
+}
+function switchMode(mode) {
+    const posterInput = document.getElementById('poster');
+
+    if (mode === 'add') {
+        document.getElementById('update-select-box').style.display = "none";
+        resetForm();
+         posterInput.required = true;
+    } else {
+        document.getElementById('update-select-box').style.display = "block";
+        resetForm(); // reset before filling
+        document.getElementById('form-title').innerText = "Update Movie";
+        posterInput.required = false;
+    }
+}
+
+function onMovieSelect() {
+    const select = document.getElementById('movie_selector');
+    const selected = select.options[select.selectedIndex];
+
+    if (!selected.value) {
+        resetForm();
+        return;
+    }
+
+    const movie = JSON.parse(selected.getAttribute("data-movie"));
+    fillForm(movie);
+}
+
+function validateYouTube(input) {
+    const url = input.value;
+    const error = document.getElementById("trailer_error");
+
+    const valid = url.startsWith("https://www.youtube.com/watch?v=") ||
+                  url.startsWith("https://youtube.com/watch?v=") ||
+                  url.startsWith("https://youtu.be/");
+
+    if (!valid && url.length > 0) {
+        error.style.display = "block";
+    } else {
+        error.style.display = "none";
+    }
+}
+
+</script>
+
+{% endblock %}

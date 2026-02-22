@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Movies - Cineberry{% endblock %}
+
+{% block content %}
+
+<!-- Floating Profile Button for Guest -->
+{% if session.logged_in_as == 'guest' %}
+<a href="/profile" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 18px;
+    background: linear-gradient(90deg,#ff99cc,#ff66aa);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+    z-index: 1000;
+"
+   onmouseover="this.style.transform='scale(1.05)'"
+   onmouseout="this.style.transform='scale(1)'">
+    Profile
+</a>
+{% endif %}
+
+<h2>Available Movies</h2>
+
+<!-- Centered Search Bar + Age Filter -->
+<div style="text-align:center; margin-bottom:20px;">
+    <input type="text" id="movieSearch" placeholder="Search movies..." style="
+        padding:10px 14px;
+        width:300px;
+        border-radius:25px;
+        border:1px solid #ccc;
+        font-size:16px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.1);
+        transition:0.2s;
+    "
+    onfocus="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)'"
+    onblur="this.style.boxShadow='0 2px 6px rgba(0,0,0,0.1)'">
+
+    <select id="ageFilter" style="
+        padding:10px 14px;
+        border-radius:25px;
+        border:1px solid #ccc;
+        font-size:16px;
+        margin-left:10px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.1);
+        transition:0.2s;
+    "
+    onfocus="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.2)'"
+    onblur="this.style.boxShadow='0 2px 6px rgba(0,0,0,0.1)'">
+        <option value="">All Ages</option>
+        <option value="G">G</option>
+        <option value="PG">PG</option>
+        <option value="PG-13">PG-13</option>
+        <option value="14+">14+</option>
+        <option value="17+">17+</option>
+        <option value="18+">18+</option>
+        <option value="R">R</option>
+    </select>
+</div>
+
+{% if session.get("logged_in_as") == "guest" %}
+    <a class="btn" href="{{ url_for('guest_booking_history') }}"
+       style="display:inline-block; margin-bottom:15px; padding:8px 16px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">
+       My Booking History
+    </a>
+{% endif %}
+
+<div class="movies-grid" id="moviesGrid" style="display:flex; flex-wrap:wrap; gap:20px;">
+    {% for movie in movies %}
+    <div class="movie-card" style="text-align:center;" data-title="{{ movie['Title'] | lower }}" data-age="{{ movie['age_rating'] }}">
+        <img src="{{ url_for('static', filename='images/' ~ movie['Poster']) }}"
+             alt="{{ movie['Title'] }}"
+             style="width:150px; height:220px; cursor:pointer;"
+             onclick="openModal({{ movie['Movie_Id'] }})">
+        <h3>{{ movie['Title'] }}</h3>
+    </div>
+
+    <!-- Modal for this movie -->
+    <div id="modal-{{ movie['Movie_Id'] }}" class="modal" style="display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; overflow:auto; background-color: rgba(0,0,0,0.6);">
+        <div class="modal-content" style="background-color:#fff; margin:10% auto; padding:20px; border-radius:10px; width:300px; text-align:center; position:relative;">
+            <span class="close" style="position:absolute; top:5px; right:10px; font-size:24px; font-weight:bold; cursor:pointer;" onclick="closeModal({{ movie['Movie_Id']}})">&times;</span>
+            <h3>{{ movie['Title'] }}</h3>
+            <p>{{ movie['Description_'] }}</p>
+            <p><b>Genre:</b> {{ movie['Genre'] }}</p>
+            <p><b>Duration:</b> {{ movie['Duration'] }} min</p>
+            <p><b>Rating:</b> {{ movie['age_rating'] }}</p>
+            <a class="book-btn" href="{{ url_for('movie_showtimes', movie_id= movie['Movie_Id'] )}}"
+               style="display:inline-block; margin-top:10px; padding:10px 20px; background-color:#ff6600; color:white; text-decoration:none; border-radius:5px;">Book Now</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<br>
+<a class="btn" href="{{ url_for('logout') }}" style="padding:8px 16px; background-color:#444; color:white; text-decoration:none; border-radius:5px;">Back to Home</a>
+
+<script>
+function openModal(id) {
+    document.getElementById('modal-' + id).style.display = 'block';
+}
+function closeModal(id) {
+    document.getElementById('modal-' + id).style.display = 'none';
+}
+
+// Close modal if clicked outside
+window.onclick = function(event) {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+
+// Search + Age Filter functionality
+const searchInput = document.getElementById('movieSearch');
+const ageFilter = document.getElementById('ageFilter');
+const movies = document.querySelectorAll('.movie-card');
+
+function filterMovies() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const ageTerm = ageFilter.value;
+
+    movies.forEach(movie => {
+        const title = movie.getAttribute('data-title');
+        const age = movie.getAttribute('data-age');
+
+        if (title.includes(searchTerm) && (ageTerm === "" || age === ageTerm)) {
+            movie.style.display = 'block';
+        } else {
+            movie.style.display = 'none';
+        }
+    });
+}
+
+searchInput.addEventListener('keyup', filterMovies);
+ageFilter.addEventListener('change', filterMovies);
+</script>
+
+{% endblock %}

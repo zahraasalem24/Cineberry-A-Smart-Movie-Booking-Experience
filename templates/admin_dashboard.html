@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Floating Profile Button -->
+<a href="/profile" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 18px;
+    background: linear-gradient(90deg,#ff99cc,#ff66aa);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+    z-index: 1000;
+"
+   onmouseover="this.style.transform='scale(1.05)'"
+   onmouseout="this.style.transform='scale(1)'">
+    Profile
+</a>
+
+<h2 style="text-align:center;">Welcome Admin {{ admin.First_Name_a }}</h2>
+<h3 style="text-align:center; margin-bottom:25px;">What would you like to do?</h3>
+
+<div style="
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    width:300px;
+    margin:auto;
+">
+
+    <!-- Button 1 -->
+    <a href="{{ url_for('admin_manage_movies') }}" style="
+        padding:12px;
+        background:#ffb3d9;
+        color:white;
+        text-align:center;
+        text-decoration:none;
+        border-radius:10px;
+        font-weight:bold;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        transition:transform 0.2s, box-shadow 0.2s;
+    "
+       onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 14px rgba(0,0,0,0.2)'"
+       onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)'">
+        Manage Movies
+    </a>
+
+    <!-- Button 2 -->
+    <a href="{{ url_for('manage_showtimes') }}" style="
+        padding:12px;
+        background:#ff99cc;
+        color:white;
+        text-align:center;
+        text-decoration:none;
+        border-radius:10px;
+        font-weight:bold;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        transition:transform 0.2s, box-shadow 0.2s;
+    "
+       onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 14px rgba(0,0,0,0.2)'"
+       onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)'">
+        Manage Showtimes
+    </a>
+
+    <!-- Button 3 -->
+    <a href="{{ url_for('booking_history') }}" style="
+        padding:12px;
+        background:#ff80bf;
+        color:white;
+        text-align:center;
+        text-decoration:none;
+        border-radius:10px;
+        font-weight:bold;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        transition:transform 0.2s, box-shadow 0.2s;
+    "
+       onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 14px rgba(0,0,0,0.2)'"
+       onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)'">
+        View Booking History
+    </a>
+
+    <!-- Button 4 -->
+    <a href="{{ url_for('manage_admins') }}" style="
+        padding:12px;
+        background:#ff66b3;
+        color:white;
+        text-align:center;
+        text-decoration:none;
+        border-radius:10px;
+        font-weight:bold;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        transition:transform 0.2s, box-shadow 0.2s;
+    "
+       onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 14px rgba(0,0,0,0.2)'"
+       onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)'">
+        Manage Admins
+    </a>
+
+    <!-- Button 5 -->
+    <a href="{{ url_for('logout') }}" style="
+        padding:12px;
+        background:#ff4da6;
+        color:white;
+        text-align:center;
+        text-decoration:none;
+        border-radius:10px;
+        font-weight:bold;
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        transition:transform 0.2s, box-shadow 0.2s;
+    "
+       onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 14px rgba(0,0,0,0.2)'"
+       onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)'">
+        Logout
+    </a>
+
+</div>
+
+{% endblock %}

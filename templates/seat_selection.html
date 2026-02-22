@@ -1,0 +1,100 @@
+<!-- notez -->
+{% extends 'base.html' %}
+
+{% block title %}Seat Selection - {{ movie.Title }}{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center;">Seat Selection for {{ movie.Title }}</h2>
+
+<!-- Movie Poster -->
+<div style="text-align:center; margin-bottom:20px;">
+    <img src="{{ url_for('static', filename='images/movie' ~ movie_id ~ '.jpg') }}"
+         alt="{{ movie.Title }}"
+         style="width:200px; height:300px;">
+</div>
+
+<h3 style="text-align:center;">Select Your Seats:</h3>
+
+<!-- Seats Container -->
+<div class="seats-container" style="display:flex; flex-direction:column; gap:10px; max-width:250px; margin:0 auto 20px auto;">
+    {% for row in ['A','B','C'] %}
+    <div class="seat-row" style="display:flex; gap:5px; justify-content:center;">
+        {% for col in range(1,6) %}
+            {% set seat_id = row ~ col %}
+            <img src="{% if seat_id in booked_seats %}{{ url_for('static', filename='images/seat_booked.png') }}{% else %}{{ url_for('static', filename='images/seat_available.png') }}{% endif %}"
+                 class="seat-img"
+                 id="seat-{{ seat_id }}"
+                 {% if seat_id in booked_seats %}data-booked="yes"{% endif %}
+                 style="width:40px; height:40px; cursor:pointer;">
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Message Modal -->
+<div id="messageModal" class="modal">
+    <div class="modal-content">
+        <p id="modalMessage">Message goes here</p>
+        <button onclick="closeMessage()">OK</button>
+    </div>
+</div>
+
+<!-- Confirm Booking Button -->
+<div style="text-align:center;">
+    <button type="button" onclick="goToBookingConfirmation()"
+            style="padding:10px 20px; background-color:#ff6600; color:white; border:none; border-radius:5px; cursor:pointer;">
+        Confirm Booking
+    </button>
+</div>
+
+<br>
+<div style="text-align:center;">
+    <a class="btn" href="{{ url_for('movies_page') }}"
+       style="padding:8px 16px; background-color:#444; color:white; text-decoration:none; border-radius:5px;">
+       Back to Movies
+    </a>
+</div>
+
+<!-- JS for seat selection -->
+<script>
+// Track selected seats
+let selectedSeats = [];
+
+document.querySelectorAll('.seat-img').forEach(img => {
+    img.addEventListener('click', function() {
+        if(this.dataset.booked === "yes") return;
+
+        const seatNumber = this.id.replace('seat-', '');
+        if(selectedSeats.includes(seatNumber)) {
+            selectedSeats = selectedSeats.filter(s => s !== seatNumber);
+            this.src = "{{ url_for('static', filename='images/seat_available.png') }}";
+        } else {
+            selectedSeats.push(seatNumber);
+            this.src = "{{ url_for('static', filename='images/seat_selected.png') }}";
+        }
+    });
+});
+
+function showMessage(msg) {
+    document.getElementById("modalMessage").innerText = msg;
+    document.getElementById("messageModal").style.display = "block";
+}
+
+function closeMessage() {
+    document.getElementById("messageModal").style.display = "none";
+}
+
+function goToBookingConfirmation() {
+    if(selectedSeats.length === 0){
+        showMessage("Please select at least one seat before confirming.");
+        return;
+    }
+    const movieId = "{{ movie_id }}";
+    const showtimeId = "{{ showtime_id }}";
+    const seatsParam = selectedSeats.join(',');
+    window.location.href = `/booking/confirmation?movie_id=${movieId}&showtime_id=${showtimeId}&selected_seats=${seatsParam}`;
+}
+</script>
+{% endblock %}
+
+
