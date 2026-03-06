@@ -26,7 +26,7 @@ Reema (Rainyuraa): Design add showtime, revoke/grant
 
 Jude (judedous): Database tables/relationships and integration/search movies
 
-Nematallah (MK-F105): Design guest home page UI and profile page
+Nematallah (MK-F105): Design guest home page UI and profile page.
 
 Ghala (gigi1004): Design home page UI/sign up and log in 
 
