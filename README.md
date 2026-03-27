@@ -28,7 +28,7 @@ Jude (judedous): Database tables/relationships and integration/search movies
 
 Nematallah (MK-F105): Design guest home page UI and profile page.
 
-Ghala (gigi1004): Design home page UI/sign up and log in 
+Ghala (gigi1004): Design home page UI/sign up and log in.
 
 Sahar (sahar2424): Design add/update movie 
 
