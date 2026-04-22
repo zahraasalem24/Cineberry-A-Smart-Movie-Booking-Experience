@@ -22,7 +22,7 @@ The project was developed collaboratively, with responsibilities divided as foll
 
 Zahraa (zahraasalem24): Design booking and seat selection/booking confirmation and history
 
-Reema (Rainyuraa): Design add showtime, revoke/grant 
+Reema (Rainyuraa): Design add showtime, revoke/grant .
 
 Jude (judedous): Database tables/relationships and integration/search movies
 
